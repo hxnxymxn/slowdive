@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-drift">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backdrop Layers — Pure Atmosphere</title>
+  <style>
+
+    /* ═══════════════════════════════════════════════════════════════
+       BASE
+       ═══════════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      position: relative;
+      background: #010304;
+      font-family: monospace;
+    }
+
+    body {
+      position: relative;
+      background: transparent;
+      overflow-x: hidden;
+    }
+
+
+    /* ▒▒▒ BEGIN tokens/bg-patterns.css ▒▒▒ */
+    /* ═══════════════════════════════════════════════════════════════
+       BACKDROP KIT — drop `.bg-drift` or `.bg-surge` on <html>.
+       Layers carried by html/body ::before ::after, plus one
+       decorative .bg-usethis div (see note at LAYER 5).
+       ═══════════════════════════════════════════════════════════════ */
+
+    @property --breathe-alpha {
+      syntax: '<number>';
+      inherits: false;
+      initial-value: 0;
+    }
+
+
+    /* ── LAYER 1 · DEPTH ── html::before ───────────────────────── */
+
+    html::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    html.bg-drift::before {
+      background-image:
+        radial-gradient(
+          ellipse 50% 50% at 50% 50%,
+          rgba(255, 255, 255, 0.038)  0%,
+          rgba(255, 255, 255, 0.000)  9%,
+          rgba(255, 255, 255, 0.030) 18%,
+          rgba(255, 255, 255, 0.000) 27%,
+          rgba(255, 255, 255, 0.025) 35%,
+          rgba(255, 255, 255, 0.000) 45%,
+          rgba(255, 255, 255, 0.020) 53%,
+          rgba(255, 255, 255, 0.000) 62%,
+          rgba(255, 255, 255, 0.015) 70%,
+          rgba(255, 255, 255, 0.000) 80%,
+          rgba(255, 255, 255, 0.010) 88%,
+          rgba(255, 255, 255, 0.000) 100%
+        ),
+        linear-gradient(
+          to bottom,
+          #000000  0%,
+          #060A0D  3%,
+          #11161A  8%,
+          #0D1115 18%,
+          #080D10 30%,
+          #030507 48%,
+          #010304 92%,
+          #000000 100%
+        );
+      background-repeat: no-repeat, no-repeat;
+      background-size: 200vw 60vh, 100% 100%;
+      background-position: 50% 60px, 0 0;
+      background-blend-mode: screen, normal;
+      will-change: background-size, background-position;
+      animation: ripple-pulse 14s ease-in-out infinite;
+    }
+
+    @keyframes ripple-pulse {
+      0%, 100% { background-size: 200vw 60vh, 100% 100%; }
+      50%      { background-size: 207vw 60vh, 100% 100%; }
+    }
+
+    html.bg-surge::before {
+      background: linear-gradient(
+        to bottom,
+        oklch(0.078 0.014 197)   0%,
+        oklch(0.092 0.016 200)   6%,
+        oklch(0.115 0.018 204)  14%,
+        oklch(0.140 0.019 209)  24%,
+        oklch(0.155 0.018 212)  32%,
+        oklch(0.148 0.016 213)  40%,
+        oklch(0.118 0.015 213)  52%,
+        oklch(0.090 0.013 214)  66%,
+        oklch(0.072 0.011 215)  82%,
+        oklch(0.060 0.010 216) 100%
+      );
+    }
+
+
+    /* ── LAYER 2 · DRIFT / POLYGON ORB ── body::before ─────────── */
+
+    body::before {
+      content: '';
+      position: fixed;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    html.bg-drift body::before {
+      inset: 0;
+      background:
+        radial-gradient(
+          ellipse 120% 80% at 70% 60%,
+          rgba( 40,  18,  80, 0.07)   0%,
+          rgba( 20,  38, 100, 0.05)  40%,
+          rgba(  0,   0,   0, 0.00) 100%
+        ),
+        radial-gradient(
+          ellipse 140% 90% at 30% 30%,
+          rgba(  0,  90,  90, 0.08)   0%,
+          rgba(  0,  55, 110, 0.06)  35%,
+          rgba(  0,   0,   0, 0.00) 100%
+        ),
+        radial-gradient(
+          ellipse 100% 100% at 50% 50%,
+          rgba(  0,  60,  80, var(--breathe-alpha, 0))   0%,
+          rgba(  0,   0,   0, 0.00) 100%
+        );
+      background-size: 280% 280%, 280% 280%, 100% 100%;
+      background-position: 20% 10%, 20% 10%, 50% 50%;
+      will-change: background-position;
+      animation:
+        drift-primary   104s ease-in-out infinite,
+        drift-secondary  74s ease-in-out infinite -28s,
+        breathe         180s ease-in-out infinite;
+    }
+
+    @keyframes drift-primary {
+      0%   { background-position: 20%  10%; }
+      25%  { background-position: 65%  35%; }
+      55%  { background-position: 40%  75%; }
+      78%  { background-position: 15%  55%; }
+      100% { background-position: 20%  10%; }
+    }
+
+    @keyframes drift-secondary {
+      0%   { background-position: 80%  20%; }
+      30%  { background-position: 30%  65%; }
+      60%  { background-position: 70%  90%; }
+      100% { background-position: 80%  20%; }
+    }
+
+    @keyframes breathe {
+      0%, 100% { --breathe-alpha: 0;    }
+      40%      { --breathe-alpha: 0.06; }
+    }
+
+    html.bg-surge body::before {
+      right: -60vw;
+      bottom: -78vw;
+      width: 120vw;
+      height: 120vw;
+      background-image: url('assets/poly.svg');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      filter: blur(4px);
+      mix-blend-mode: screen;
+      transform-origin: 100% 100%;
+      will-change: scale, translate, rotate, opacity;
+      animation:
+        poly-drift 192s ease-in-out infinite,
+        poly-fade auto linear both,
+        poly-grow auto linear both;
+      animation-timeline: auto, scroll(root block), scroll(root block);
+      animation-range: normal, 30% 60%, 30% 100%;
+    }
+
+    @keyframes poly-drift {
+      0%   { translate:   0vw   0vw; rotate:  0deg;   }
+      22%  { translate:  -5vw  -3vw; rotate: -1.6deg; }
+      45%  { translate:   3vw  -5vw; rotate:  1.0deg; }
+      68%  { translate:  -2vw   3vw; rotate:  0.5deg; }
+      85%  { translate:   4vw   1vw; rotate: -0.7deg; }
+      100% { translate:   0vw   0vw; rotate:  0deg;   }
+    }
+
+    @keyframes poly-fade {
+      from { opacity: 0;    }
+      to   { opacity: 0.65; }
+    }
+
+    @keyframes poly-grow {
+      from { scale: 1;   }
+      to   { scale: 1.6; }
+    }
+
+
+    /* ── LAYER 3 · AMBIENT LIGHT + VIGNETTE ── body::after ──────── */
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      mix-blend-mode: soft-light;
+    }
+
+    html.bg-drift body::after {
+      background:
+        radial-gradient(
+          ellipse 100% 100% at 50% 50%,
+          rgba(  0,   0,   0, 0.000)  40%,
+          rgba(  0,   0,   0, 0.160) 100%
+        ),
+        radial-gradient(
+          ellipse 80% 55% at 48% 18%,
+          rgba(220, 236, 248, 0.165)  0%,
+          rgba(255, 255, 255, 0.000) 60%
+        );
+      opacity: 0;
+      animation: ambient-fade auto linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 10% 30%;
+    }
+
+    @keyframes ambient-fade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    html.bg-surge body::after {
+      background:
+        radial-gradient(
+          ellipse 100% 100% at 50% 50%,
+          oklch(0.00 0.000 0 / 0.000)  35%,
+          oklch(0.00 0.000 0 / 0.220) 100%
+        ),
+        radial-gradient(
+          ellipse 90% 65% at 48% 22%,
+          oklch(0.97 0.010 205 / 0.080)  0%,
+          oklch(0.97 0.010 205 / 0.000) 65%
+        );
+    }
+
+
+    /* ── LAYER 4 · BUBBLE FIELD ── .bubble-field (bg-drift only) ── */
+
+    .bubble-field {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 40%,
+        black       50%,
+        black       70%,
+        transparent 80%
+      );
+              mask-image: linear-gradient(
+        to bottom,
+        transparent 40%,
+        black       50%,
+        black       70%,
+        transparent 80%
+      );
+    }
+
+    html.bg-surge .bubble-field { display: none; }
+
+    .bubble-field svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+
+    /* ── LAYER 5 · USETHIS COMPANION ── .bg-usethis (bg-surge only) ──
+       The lone non-pseudo decorative element. Required because the
+       render pipeline applies `filter` BEFORE `mask`, so a single
+       element can't blur the masked shape's edges — needs an outer
+       wrapper (filter) + inner child (mask). */
+
+    .bg-usethis {
+      position: fixed;
+      left: -25vw;
+      top: 0;
+      width: 150vw;
+      height: 105vw;
+      z-index: 2;
+      pointer-events: none;
+      display: none;
+      mix-blend-mode: lighten;
+      will-change: opacity, filter;
+      animation: usethis-fade auto linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0% 50%;
+    }
+
+    .bg-usethis::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: oklch(0.46 0.085 200);
+      -webkit-mask-image: url('assets/usethis.svg');
+              mask-image: url('assets/usethis.svg');
+      -webkit-mask-repeat: no-repeat;
+              mask-repeat: no-repeat;
+      -webkit-mask-size: contain;
+              mask-size: contain;
+      -webkit-mask-position: center top;
+              mask-position: center top;
+    }
+
+    html.bg-surge .bg-usethis { display: block; }
+
+    @keyframes usethis-fade {
+      from { opacity: 0.70; filter: blur(30px); }
+      to   { opacity: 0;    filter: blur(50px); }
+    }
+
+
+    /* ▒▒▒ END tokens/bg-patterns.css ▒▒▒ */
+    /* ═══════════════════════════════════════════════════════════════
+       DEMO CHROME — markers, HUD panels, view toggle, scroll readout.
+       Not part of the backdrop kit; consumers can delete everything
+       below this line.
+       ═══════════════════════════════════════════════════════════════ */
+
+    body { min-height: 7000px; }
+
+    .marker {
+      position: absolute;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 40px;
+      z-index: 5;
+    }
+
+    .marker-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .marker-label {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.18);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .hud-panel {
+      position: fixed;
+      bottom: 24px;
+      z-index: 10;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 12px 16px;
+      min-height: 96px;
+      box-sizing: border-box;
+      display: flex;
+    }
+
+    .layer-key {
+      left: 24px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      display: none;
+    }
+
+    html.bg-drift .layer-key[data-view-key="drift"],
+    html.bg-surge .layer-key[data-view-key="surge"] {
+      display: flex;
+    }
+
+    .key-item { font-size: 9px; letter-spacing: 0.06em; color: rgba(255,255,255,0.28); }
+    .key-item span        { color: rgba(0,229,218,0.6); }
+    .key-item span.purple { color: rgba(160,80,255,0.6); }
+    .key-item span.warm   { color: rgba(180,210,225,0.6); }
+
+    .view-controller {
+      right: 24px;
+      flex-direction: row;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .vc-icon {
+      background: none;
+      border: none;
+      padding: 10px;
+      margin: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: filter 220ms ease, background 220ms ease;
+    }
+
+    .vc-icon svg { width: 28px; height: 28px; display: block; overflow: visible; }
+
+    .vc-icon svg .shape {
+      fill: transparent;
+      stroke: #E4E6DA;
+      stroke-opacity: 0.22;
+      stroke-width: 0.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: fill 220ms ease, stroke-opacity 220ms ease;
+    }
+
+    .vc-icon.active[data-shape="triangle"] svg .shape { fill: rgba(  0, 128, 128, 0.5); }
+    .vc-icon.active[data-shape="square"]   svg .shape { fill: rgba(  0, 127, 255, 0.5); }
+    .vc-icon.active[data-shape="circle"]   svg .shape { fill: rgba(255,   0, 170, 0.2); }
+
+    .vc-icon:hover { filter: brightness(1.6); }
+    .vc-icon[data-shape="triangle"]:hover svg .shape { stroke: rgba(  0, 128, 128, 1); stroke-opacity: 0.6; }
+    .vc-icon[data-shape="square"]:hover   svg .shape { stroke: rgba(  0, 127, 255, 1); stroke-opacity: 0.6; }
+    .vc-icon[data-shape="circle"]:hover   svg .shape { stroke: rgba(255,   0, 170, 1); stroke-opacity: 0.6; }
+    .vc-icon:focus-visible { outline: 1px solid rgba(255,255,255,0.18); outline-offset: 2px; }
+
+    .scroll-pos {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      z-index: 10;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.20);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="bg-usethis" aria-hidden="true"></div>
+
+<div class="bubble-field" aria-hidden="true">
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <defs>
+
+      <linearGradient id="bub-base" x1="0" y1="0" x2="0" y2="1"
+                      gradientUnits="objectBoundingBox">
+        <stop offset="0%"   stop-color="#6D80A1" stop-opacity="0.50"/>
+        <stop offset="100%" stop-color="#687A99" stop-opacity="0.12"/>
+      </linearGradient>
+
+      <filter id="bub-inset"
+              x="-20%" y="-20%" width="140%" height="140%"
+              filterUnits="objectBoundingBox"
+              primitiveUnits="objectBoundingBox"
+              color-interpolation-filters="sRGB">
+        <feOffset       in="SourceAlpha" dx="0" dy="0.10" result="shifted"/>
+        <feGaussianBlur in="shifted"     stdDeviation="0.10" result="blurred"/>
+        <feComposite    in="blurred"     in2="SourceAlpha" operator="in" result="clipped"/>
+        <feFlood        flood-color="white" flood-opacity="0.24" result="hiColor"/>
+        <feComposite    in="hiColor"     in2="clipped"    operator="in" result="hi"/>
+        <feMerge>
+          <feMergeNode in="SourceGraphic"/>
+          <feMergeNode in="hi"/>
+        </feMerge>
+      </filter>
+
+      <symbol id="bubble" viewBox="-0.5 -0.5 1 1">
+        <g filter="url(#bub-inset)">
+          <circle cx="0" cy="0" r="0.5" fill="url(#bub-base)"/>
+          <circle cx="0" cy="0" r="0.5" fill="white" fill-opacity="0.20"
+                  style="mix-blend-mode: overlay"/>
+        </g>
+      </symbol>
+
+    </defs>
+
+    <use href="#bubble" x="8%"  y="44%" width="32" height="32" opacity="0.15"/>
+    <use href="#bubble" x="28%" y="42%" width="40" height="40" opacity="0.15"/>
+    <use href="#bubble" x="52%" y="45%" width="24" height="24" opacity="0.15"/>
+    <use href="#bubble" x="76%" y="43%" width="48" height="48" opacity="0.15"/>
+    <use href="#bubble" x="17%" y="49%" width="40" height="40" opacity="0.15"/>
+    <use href="#bubble" x="38%" y="50%" width="24" height="24" opacity="0.15"/>
+    <use href="#bubble" x="62%" y="48%" width="48" height="48" opacity="0.15"/>
+    <use href="#bubble" x="88%" y="51%" width="32" height="32" opacity="0.15"/>
+    <use href="#bubble" x="5%"  y="55%" width="24" height="24" opacity="0.15"/>
+    <use href="#bubble" x="25%" y="56%" width="48" height="48" opacity="0.15"/>
+    <use href="#bubble" x="47%" y="54%" width="32" height="32" opacity="0.15"/>
+    <use href="#bubble" x="70%" y="57%" width="40" height="40" opacity="0.15"/>
+    <use href="#bubble" x="12%" y="62%" width="48" height="48" opacity="0.15"/>
+    <use href="#bubble" x="34%" y="64%" width="32" height="32" opacity="0.15"/>
+    <use href="#bubble" x="58%" y="61%" width="40" height="40" opacity="0.15"/>
+    <use href="#bubble" x="82%" y="63%" width="24" height="24" opacity="0.15"/>
+    <use href="#bubble" x="22%" y="70%" width="32" height="32" opacity="0.15"/>
+    <use href="#bubble" x="44%" y="69%" width="40" height="40" opacity="0.15"/>
+    <use href="#bubble" x="66%" y="71%" width="24" height="24" opacity="0.15"/>
+    <use href="#bubble" x="91%" y="68%" width="48" height="48" opacity="0.15"/>
+    <use href="#bubble" x="3%"  y="76%" width="40" height="40" opacity="0.15"/>
+    <use href="#bubble" x="30%" y="78%" width="24" height="24" opacity="0.15"/>
+    <use href="#bubble" x="55%" y="75%" width="48" height="48" opacity="0.15"/>
+    <use href="#bubble" x="78%" y="77%" width="32" height="32" opacity="0.15"/>
+  </svg>
+</div>
+
+<div class="marker" style="top: 0px">
+  <div class="marker-line"></div>
+  <span class="marker-label">surface — 0%</span>
+  <div class="marker-line"></div>
+</div>
+<div class="marker" style="top: 1000px">
+  <div class="marker-line"></div>
+  <span class="marker-label">upper drift — 20%</span>
+  <div class="marker-line"></div>
+</div>
+<div class="marker" style="top: 1800px">
+  <div class="marker-line"></div>
+  <span class="marker-label">middle band — 36%</span>
+  <div class="marker-line"></div>
+</div>
+<div class="marker" style="top: 2500px">
+  <div class="marker-line"></div>
+  <span class="marker-label">open water — 50%</span>
+  <div class="marker-line"></div>
+</div>
+<div class="marker" style="top: 3200px">
+  <div class="marker-line"></div>
+  <span class="marker-label">lower fold — 64%</span>
+  <div class="marker-line"></div>
+</div>
+<div class="marker" style="top: 4000px">
+  <div class="marker-line"></div>
+  <span class="marker-label">trench — 80%</span>
+  <div class="marker-line"></div>
+</div>
+<div class="marker" style="top: 4900px">
+  <div class="marker-line"></div>
+  <span class="marker-label">the deep — 100%</span>
+  <div class="marker-line"></div>
+</div>
+
+
+<div class="hud-panel layer-key" data-view-key="drift">
+  <span class="key-item">z1 <span>depth + ripple</span> — html::before · scrolls · surface → deep · ripple stacked on top</span>
+  <span class="key-item">z2 <span>drift</span> — body::before · fixed · <span>teal</span> · ocean · <span class="purple">indigo</span> · breathe</span>
+  <span class="key-item">z3 <span class="warm">ambient + vignette</span> — body::after · fixed · soft-light · scroll-fades in</span>
+  <span class="key-item">z4 <span>circles</span> — .bubble-field · SVG &lt;use&gt; · 40–80% band fade</span>
+</div>
+
+<div class="hud-panel layer-key" data-view-key="surge">
+  <span class="key-item">z1 <span>cyan-blue ramp</span> — html::before · scrolls · oklch frost depth</span>
+  <span class="key-item">z2 <span>polygon</span> — body::before · fixed · poly.svg · screen · scroll-fade + grow</span>
+  <span class="key-item">z2 <span>usethis</span> — .bg-usethis div · fixed · masked teal · scroll-fade + blur</span>
+  <span class="key-item">z3 <span class="warm">frost ambient + vignette</span> — body::after · fixed · soft-light</span>
+</div>
+
+<div class="hud-panel view-controller" role="radiogroup" aria-label="View">
+  <button class="vc-icon active" data-shape="triangle" role="radio" aria-checked="true" aria-label="Drift view">
+    <svg viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path class="shape" d="M12.3573 3.59642C12.1991 3.32365 11.972 3.09724 11.6987 2.93985C11.4255 2.78245 11.1156 2.69961 10.8003 2.69961C10.485 2.69961 10.1752 2.78245 9.9019 2.93985C9.62864 3.09724 9.40153 3.32365 9.2433 3.59642L2.0433 16.1964C1.8854 16.4699 1.80223 16.7802 1.80215 17.096C1.80207 17.4118 1.88508 17.722 2.04284 17.9956C2.20061 18.2692 2.42757 18.4965 2.70095 18.6546C2.97433 18.8127 3.28449 18.8961 3.6003 18.8964H18.0003C18.3161 18.8961 18.6263 18.8127 18.8997 18.6546C19.173 18.4965 19.4 18.2692 19.5578 17.9956C19.7155 17.722 19.7985 17.4118 19.7985 17.096C19.7984 16.7802 19.7152 16.4699 19.5573 16.1964L12.3573 3.59642Z"/>
+    </svg>
+  </button>
+  <button class="vc-icon" data-shape="square" role="radio" aria-checked="false" aria-label="Surge view">
+    <svg viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path class="shape" d="M9.52804 0.618443L0.618495 9.52799C-0.0844484 10.2309 -0.0844484 11.3706 0.618495 12.0736L9.52804 20.9831C10.231 21.6861 11.3707 21.6861 12.0736 20.9831L20.9832 12.0736C21.6861 11.3706 21.6861 10.2309 20.9832 9.52799L12.0736 0.618443C11.3707 -0.0845005 10.231 -0.0845006 9.52804 0.618443Z"/>
+    </svg>
+  </button>
+  <button class="vc-icon" data-shape="circle" role="radio" aria-checked="false" aria-label="Circle view (inert)">
+    <svg viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+      <path class="shape" d="M10.7998 19.7988C15.7704 19.7988 19.7998 15.7694 19.7998 10.7988C19.7998 5.82827 15.7704 1.79883 10.7998 1.79883C5.82924 1.79883 1.7998 5.82827 1.7998 10.7988C1.7998 15.7694 5.82924 19.7988 10.7998 19.7988Z"/>
+    </svg>
+  </button>
+</div>
+
+<div class="scroll-pos" id="scroll-pos">0%</div>
+
+
+<script>
+  const html = document.documentElement;
+  const SHAPE_TO_CLASS = { triangle: 'bg-drift', square: 'bg-surge' };
+  const vcIcons = document.querySelectorAll('.view-controller .vc-icon');
+  vcIcons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const cls = SHAPE_TO_CLASS[btn.dataset.shape];
+      if (!cls) return;
+      html.classList.remove('bg-drift', 'bg-surge');
+      html.classList.add(cls);
+      vcIcons.forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+      // Both views have scroll-driven visuals keyed to the top of
+      // the page — usethis fades out across 0–50% scroll in surge,
+      // ambient fades in across 10–30% in drift. Snap to top on
+      // every view switch so whichever view the user just chose
+      // starts from its intended first frame.
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+  });
+
+  const scrollPosEl = document.getElementById('scroll-pos');
+  window.addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? Math.round((window.scrollY / max) * 100) : 0;
+    scrollPosEl.textContent = pct + '%';
+  }, { passive: true });
+</script>
+
+</body>
+</html>
